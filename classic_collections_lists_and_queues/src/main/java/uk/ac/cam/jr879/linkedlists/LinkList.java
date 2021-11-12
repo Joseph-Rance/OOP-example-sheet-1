@@ -141,11 +141,16 @@ public class LinkList<T extends Comparable<T>> implements OopList<T> {
 
     public void reorderLowHigh() {
         Node<T> current = head;
+
+        if (current == null) {
+            return;
+        }
+
         int ctr = 0;
 
         while (current.next != null) {
-            if (ctr % 2 == 0 && current.value > current.next.value
-             || ctr % 2 == 1 && current.value < current.next.value) {
+            if (ctr % 2 == 0 && current.value.compareTo(current.next.value) > 0
+             || ctr % 2 == 1 && current.value.compareTo(current.next.value) < 0) {
                 T temp = current.value;
                 current.value = current.next.value;
                 current.next.value = temp;

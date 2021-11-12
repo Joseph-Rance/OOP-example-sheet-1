@@ -200,7 +200,7 @@ public class LinkListTest {
     @Test
     public void reverse_returnsReversedList_withNonEmptyInput() {
         // ARRANGE
-        LinkList<Integer> list = LinkList.<Integer>create(new Integer[] {4, 5, 6, 7});
+        LinkList<Integer> list = LinkList.create(new Integer[] {4, 5, 6, 7});
 
         // ACT
         list.reverse();
