@@ -16,64 +16,68 @@
 
 package uk.ac.cam.jr879.sorting;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
 public class MergeSorter<T> implements Sorter<T> {
 
-  private T[] merge(T[] array) {
+  private void merge(T[] array, int start, int size, Comparator<T> comparator) {
 
-  }
+    T[] first = Arrays.copyOfRange(array, start, start+size);
 
-  /*
-  // realised first attempt was bad
-  @Override
-  public void sort(T[] array, Comparator<T> comparator) {
-    int n = 2;
-    // 1,1,2,4,3,2,3,4
-    //       ^ ^
-    while (n <= array.length/2) {
-      for (int i = 0; i+n-1 < array.length; i += n) {
-        // merge i to i+n-1 with i+n and i+2n-1
-        T[] temp = (T[])new Object[2*n];
-        int p1 = i;
-        int p2 = i+n;
-        for (int j = 0; j < 2*n; j++) {
-          if (comparator.compare(array[p1], array[p2]) < 0) {  // a_p1 < a_p2
-            temp[j] = array[p1];
-            p1++;
-          } else {  // a_p1 >= a_p2
-            temp[j] = array[p2];
-            p2++;
-          }
+    int end = Math.max(start+size, Math.min(start+2*size, array.length));
+    T[] second = Arrays.copyOfRange(array, start+size, end);
 
-          if (p1 >= i+n) {
-            while (p2 < i+2*n) {
-              temp[j] = array[p2];
-              p2++;
-              j++;
-            }
-            break;
-          } else if (p2 >= i+2*n) {
-            while (p1 < i+*n) {
-              temp[j] = array[p1];
-              p1++;
-              j++;
-            }
-            break;
-          }
+    int p1 = 0;
+    int p2 = 0;
+    int p3 = start;
 
+    while (p3 < start + 2*size) {
+
+      if (p1 == first.length) {
+        while (p2 < second.length) {
+          array[p3] = second[p2];
+          p2++;
+          p3++;
         }
+        break;
+      } if (p2 == second.length) {
+        while (p1 < first.length) {
+          array[p3] = first[p1];
+          p1++;
+          p3++;
+        }
+        break;
       }
-      n = 2*n;
-    }
-    // merge 0 to i+n-1 with i+n to end
-  }
-  */
 
+      T a = first[p1];
+      T b = second[p2];
+
+      if (comparator.compare(a, b) < 0) {
+        array[p3] = a;
+        p1++;
+      } else {
+        array[p3] = b;
+        p2++;
+      }
+
+      if (p2 >= start+2*size) {
+        break;
+      } else if (p1 >= size) {
+        break;
+      }
+
+      p3++;
+    }
+  }
 
   @Override
   public void sort(T[] array, Comparator<T> comparator) {
-
+    for (int size = 1; size < array.length; size *= 2) {
+      for (int start = 0; start < array.length; start += size * 2) {
+        merge(array, start, size, comparator);
+      }
+    }
   }
 }

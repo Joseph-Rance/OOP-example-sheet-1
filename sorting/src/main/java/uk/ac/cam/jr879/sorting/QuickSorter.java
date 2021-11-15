@@ -19,8 +19,35 @@ package uk.ac.cam.jr879.sorting;
 import java.util.Comparator;
 
 public class QuickSorter<T> implements Sorter<T> {
+
+  private int partition(T[] array, int start, int end, Comparator<T> comparator) {
+    T pivot = array[end-1];
+    int split = start - 1;
+
+    for (int current = start; current < end; current++) {
+      if (comparator.compare(array[current], pivot) <= 0) {
+        split++;
+        T temp = array[current];
+        array[current] = array[split];
+        array[split] = temp;
+      }
+    }
+    return split;
+  }
+
+  private void qs(T[] array, int start, int end, Comparator<T> comparator) { // end exclusive
+    if (end - start < 2) {
+      return;
+    }
+
+    int pivot = partition(array, start, end, comparator);
+
+    qs(array, start, pivot, comparator);
+    qs(array, pivot+1, end, comparator);
+  }
+
   @Override
   public void sort(T[] array, Comparator<T> comparator) {
-    // TODO: implement in-place quick sort without using temporary arrays
+    qs(array, 0, array.length, comparator);
   }
 }
